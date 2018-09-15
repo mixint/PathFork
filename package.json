@@ -1,0 +1,36 @@
+{
+  "name": "@mixint/pathfork",
+  "version": "1.0.0",
+  "description": "A Transflect stream that executes a program and returns an object containing arrays of stdin, stdout, stderr",
+  "main": "PathFork.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "parsedmessage": "^3.0.0",
+    "serverfailsoft": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mixint/pathfork.git"
+  },
+  "keywords": [
+    "fork",
+    "child_process",
+    "spawn",
+    "stdin",
+    "stdout",
+    "stderr",
+    "transflect"
+  ],
+  "author": "Colten Jackson",
+  "license": "SEE LICENSE IN CONTINUITY.LICENSE",
+  "bugs": {
+    "url": "https://github.com/mixint/pathfork/issues"
+  },
+  "homepage": "https://github.com/mixint/pathfork#readme"
+}
