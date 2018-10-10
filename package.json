@@ -7,8 +7,9 @@
     "example": "examples"
   },
   "dependencies": {
-    "parsedmessage": "^3.0.0",
-    "serverfailsoft": "^1.1.1"
+    "@mixint/transflect": "^0.4.0",
+    "parsedmessage": "^3.0.1",
+    "serverfailsoft": "^1.2.4"
   },
   "devDependencies": {},
   "scripts": {

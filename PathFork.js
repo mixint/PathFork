@@ -1,10 +1,20 @@
 let Transflect = require('@mixint/transflect')
 let child_process = require('child_process')
+let os = require('os')
+
+Array.prototype.splitPush = function(Buffer){
+    this.push(...String(Buffer).split(os.EOL))
+}
 
 module.exports = class PathFork extends Transflect {
     constructor(opt){
         super(opt)
-        this.stdin = this.stdout = this.stderr = []
+        /* setting up some arrays to log the output of the child process */
+        this.stdio = {
+            stdin:  [],
+            stdout: [],
+            stderr: [],
+        }
     }
 
     /**
@@ -19,7 +29,8 @@ module.exports = class PathFork extends Transflect {
 
     /**
      * child_process.spawn takes a string executable name, an array of arguments, and an options object
-     * @return ${undefined} - child_process is not a stream, so no sense in returning it
+     * @return {undefined} - child_process is not a stream, 
+     * so no sense in returning it, instead we have to manually attach error handler to 
      */
     _open(source){
         this.fork = child_process.spawn(
@@ -30,7 +41,9 @@ module.exports = class PathFork extends Transflect {
                 cwd: process.cwd()
             }
         )
-        // have to explicitly attach destroy-on-error
+        // stdout / stdin don't exist yet or what ??
+        // have to explicitly attach destroy-on-error, kill subprocess if stream errors.
+        this.on('error', error => this.fork.kill())
         this.fork.on('error', error => this.destroy(error))
     }
 
@@ -39,7 +52,8 @@ module.exports = class PathFork extends Transflect {
      * Then pipes the request body to the stdin of the ongoing program.
      */
     _transform(chunk, encoding, done){
-        this.stdin = this.stdin.concat(chunk.toString().split('\n'))
+        this.stdio.stdin.splitPush(chunk)
+        // TODO test this, does a child processes stdin emit drains as expected ?
         this.fork.stdin.write(chunk) && done() || this.fork.stdin.on('drain', done)
     }
 
@@ -49,20 +63,20 @@ module.exports = class PathFork extends Transflect {
      * so if a program outputs more than 16kB... what happens?
      */
     _flush(done){
-        this.fork.stdout.on('data', chunk => {
-            this.stdout = this.stdout.concat(chunk.toString().split('\n'))
-        })
-        this.fork.stderr.on('data', chunk => {
-            this.stderr = this.stderr.concat(chunk.toString().split('\n'))
+       this.fork.stdout.on('data', data => {
+            this.stdio.stdout.splitPush(data)
         })
 
+        this.fork.stderr.on('data', data => {
+            this.stdio.stderr.splitPush(data)
+        })
+        // TODO is this a race? is there a chance a program will exit before _flush is fired ? probably.
+        // Maybe come back to this with lessons from TeleFork.
         this.fork.on('exit', (signal, code) => {
             done(null, JSON.stringify({
                 source: this.source.pathname,
                 args: this.arrayify(this.source.query),
-                stdin: this.stdin,
-                stdout: this.stdout,
-                stderr: this.stderr,
+                stdio: this.stdio,
                 signal,
                 code
             }))
