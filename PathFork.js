@@ -79,7 +79,7 @@ module.exports = class PathFork extends Transflect {
                 stdio: this.stdio,
                 signal,
                 code
-            }))
+            }, null, 2))
         })
     }
 }
