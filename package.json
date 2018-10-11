@@ -1,6 +1,6 @@
 {
   "name": "@mixint/pathfork",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Transflect stream that executes a program and returns an object containing arrays of stdin, stdout, stderr",
   "main": "PathFork.js",
   "directories": {
