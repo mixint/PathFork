@@ -58,19 +58,16 @@ module.exports = class PathFork extends Transflect {
      * Then pipes the request body to the stdin of the ongoing program.
      * TODO test this, does a child processes stdin emit drains as expected ?
      */
-    _transform(chunk, encoding, done){
-        this.stdio.stdin.splitPush(chunk)
-        this.fork.stdin.write(chunk) && done() || this.fork.stdin.on('drain', done)
+    _transform(data, done){
+        this.stdio.stdin.splitPush(data)
+        this.fork.stdin.write(data) && done() || this.fork.stdin.on('drain', done)
     }
 
     /**
-     * I think I'm at risk of blowing the HighWaterMark on stdout stream,
-     * before attaching a data handler, all program output will be buffered
-     * so if a program outputs more than 16kB... what happens?
-     * TODO is this a race? is there a chance a program will exit before _flush is fired ? probably.
-     * Maybe come back to this with lessons from TeleFork.
+     * After the last byte is attached to stdin, start consuming output by pushing to stdio arrays.
+     * This probably has potential to blow the highwatermark if program outputs kB of text before I'm done writing to stdin.
      */
-    _flush(done){
+    _end(done){
        this.fork.stdout.on('data', data => {
             this.stdio.stdout.splitPush(data)
         })
