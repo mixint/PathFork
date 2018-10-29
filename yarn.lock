@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@mixint/transflect@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@mixint/transflect/-/transflect-0.6.1.tgz#c06c34b9ae5021de2331dd22a8e20d1d3a828f83"
-  integrity sha512-ARzb01ROkfgDHpUP1a2FKtFgdSvtHpq4Y5NHpJx19PyhAnZn9x0PZ72w9Ua/K5B4RoSYbrgtoHDSmQeloRWlTA==
+"@mixint/transflect@0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@mixint/transflect/-/transflect-0.6.3.tgz#dc08e9898a1a11b90ddbd81dfa80973faa746b7d"
+  integrity sha512-Otx62/7HZB31BItIv+6xOnhiKQtFpyQfyE1HMiEvg7s7b0cAqQDwWS7ibladsbytJXnbTv9nN61lL8DjfZu6CQ==
   dependencies:
     parsedmessage "3.0.1"
     serverfailsoft "2.0.2"
